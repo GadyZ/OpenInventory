@@ -15,10 +15,9 @@ public class UIController : MonoBehaviour {
         DontDestroyOnLoad(this);
     }
 
-    public Slot emptySlot;
     public GridLayoutGroup slotHolder;  
 
-    public Inventory playerInventory;
+    public Container playerInventory;
     public int playerInventorySlots = 10;
 
     public Item item;
@@ -26,9 +25,7 @@ public class UIController : MonoBehaviour {
 
     private void Awake()
     {
-        playerInventory = new Inventory(playerInventorySlots);
-
-        DrawInventory(playerInventory);
+        playerInventory = new Container(10);
     }
 
     private void Update()
@@ -40,29 +37,4 @@ public class UIController : MonoBehaviour {
             playerInventory.RemoveItem(item, qty);
     }
 
-    void DrawInventory(Inventory inventory)
-    {
-        foreach (Transform t in slotHolder.transform)
-            Destroy(t.gameObject);
-
-        foreach (var x in inventory.slots)
-        {
-            var newSlot = Instantiate(emptySlot);
-            newSlot.transform.SetParent(slotHolder.transform);
-
-            if (x.itemInSlot != null)
-            {
-                newSlot.itemInSlot = x.itemInSlot;
-                newSlot.currentStack = x.currentStack;
-            }
-            else
-            {
-                newSlot.itemInSlot = null;
-                newSlot.currentStack = 0;
-            }
-
-            newSlot.RedrawSlot();
-        }
-    }
-    
 }

@@ -1,34 +1,47 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
-public class Inventory
+[System.Serializable]
+public class Container
 {
-    public Slot[] slots;
+    public string name;
+    public List<SlotData> slots = new List<SlotData>();
 
-    public Inventory(int numSlots)
+    #region Constructors
+    public Container(int numSlots)
     {
-        slots = new Slot[numSlots];
-
+        for (int i = 0; i < numSlots; i++)
+        {
+            slots.Add(new SlotData(null,0));
+        }
     }
+
+    public Container(List<SlotData> existingData)
+    {
+        for (int i = 0; i < existingData.Count; i++)
+        {
+            slots.Add(new SlotData(existingData[i].itemInSlot, existingData[i].currentStack));
+        }
+    }
+    #endregion
 
     public void AddItem(Item item, int qty)
     {
         Debug.Log("Adding " + qty + " " + item.name);
-        while(qty > 0)
+        while (qty > 0)
         {
-            if(slots.ToList().Exists(x=> (x.itemInSlot == item) && x.currentStack < item.maxStack))
+            if (slots.Exists(x => (x.itemInSlot == item) && x.currentStack < item.maxStack))
             {
                 var targetSlot = slots.First((x => (x.itemInSlot == item) && x.currentStack < item.maxStack));
                 var amountToAdd = Mathf.Min(qty, item.maxStack - targetSlot.currentStack);
                 targetSlot.currentStack += amountToAdd;
-                targetSlot.RedrawSlot();
                 qty -= amountToAdd;
             }
             else
             {
-                if(slots.ToList().Exists(x => x.itemInSlot == null))
+                if (slots.Exists(x => x.itemInSlot == null))
                 {
                     var targetSlot = slots.First(x => x.itemInSlot == null);
                     targetSlot.itemInSlot = item;
@@ -60,7 +73,6 @@ public class Inventory
                 if (targetSlot.currentStack == 0)
                     targetSlot.itemInSlot = null;
 
-                targetSlot.RedrawSlot();
                 qty -= amountToRemove;
             }
         }
@@ -72,8 +84,21 @@ public class Inventory
         Debug.Log("Player has " + GetItemCount(item) + " total " + item.name);
     }
 
-    public int GetItemCount(Item item)
+    private int GetItemCount(Item item)
     {
         return slots.Where(x => x.itemInSlot == item).Sum(x => x.currentStack);
+    }
+}
+
+[System.Serializable]
+public class SlotData
+{
+    public Item itemInSlot;
+    public int currentStack;
+
+    public SlotData(Item itemInSlot, int currentStack)
+    {
+        this.itemInSlot = itemInSlot;
+        this.currentStack = currentStack;
     }
 }
