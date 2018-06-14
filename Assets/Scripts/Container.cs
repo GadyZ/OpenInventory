@@ -55,6 +55,7 @@ public class Container
             }
         }
 
+        UIController.instance.activeSlots.ForEach(x => x.RedrawSlot());
         Debug.Log("Player has " + GetItemCount(item) + " total " + item.name);
     }
 
@@ -80,7 +81,7 @@ public class Container
         {
             Debug.Log("Not enough " + item.name + " exists to remove " + qty+". Has "+itemCount);
         }
-
+        UIController.instance.activeSlots.ForEach(x => x.RedrawSlot());
         Debug.Log("Player has " + GetItemCount(item) + " total " + item.name);
     }
 
