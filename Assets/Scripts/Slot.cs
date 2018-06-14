@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class Slot : MonoBehaviour {
-    public Item itemInSlot;
-    public int currentStack = 0;
+public class Slot : MonoBehaviour
+{
+    public SlotData data;
 
     public Image icon;
     public Text text;
@@ -16,11 +16,11 @@ public class Slot : MonoBehaviour {
 
     public void RedrawSlot()
     {
-        if(itemInSlot != null)
+        if (data.itemInSlot != null)
         {
             icon.enabled = true;
-            icon.sprite = itemInSlot.icon;
-            text.text = itemInSlot.name + " " + currentStack + "/" + itemInSlot.maxStack;
+            icon.sprite = data.itemInSlot.icon;
+            text.text = data.itemInSlot.name + " " + data.currentStack + "/" + data.itemInSlot.maxStack;
         }
         else
         {
